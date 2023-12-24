@@ -1,0 +1,33 @@
+/* File: src/components/ActiveTask.css */
+
+.active-task {
+    width: 100%;
+}
+
+.column-group-basic {
+    background-color: #f0f8ff;
+}
+
+.column-group-details {
+    background-color: #e6e6fa;
+}
+
+.column-group-evaluation {
+    background-color: #f5f5dc;
+}
+
+.column-group-other {
+    background-color: #fafad2;
+}
+
+.task-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-actions button {
+    margin-bottom: 5px;
+}
+

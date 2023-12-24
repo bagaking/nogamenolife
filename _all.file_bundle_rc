@@ -1,0 +1,13 @@
+entry = [
+    "./src/**/*",
+    # "index.html",
+    # "*.config.ts",
+    # "tsconfig.json"
+]
+
+exclude = [
+]
+
+output = "./bundle/all.bundle"
+
+description = "以下为新文件内容，File 为文件路径"
