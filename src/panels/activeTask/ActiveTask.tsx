@@ -1,14 +1,12 @@
-// File: src/components/ActiveTask.tsx
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Avatar, Badge, Tag, Button, Select } from 'antd';
+import { Table, Avatar, Badge, Tag, Button } from 'antd';
 
-import { ActiveTaskModel, TaskStatus, TaskSourceType, TaskStatusColor, TaskSourceTypeColor } from '../model';
-import {PopoverSelectTag} from './PopoverSelectTag'
-import {ResponsiveDate} from './ResponsiveDate'
-import { RotatingColumnTitle } from './RotatingColumnTitle';
-import {TaskTimeUnitConverter} from './TaskTimeUnitConverter';
-import './ActiveTask.css';
+import { ActiveTaskModel, TaskStatus, TaskSourceType, TaskStatusColor, TaskSourceTypeColor } from '@/model';
+import {PopoverSelectTag} from '@/components/PopoverSelectTag'
+import {ResponsiveDate} from '@/components/ResponsiveDate'
+import { RotatingColumnTitle } from '@/components/RotatingColumnTitle';
+import {TaskTimeUnitConverter} from '@/components/TaskTimeUnitConverter';
+import './ActiveTask.less';
 
 const handleStatusChange = (record: ActiveTaskModel, value: TaskStatus) => {
     console.log(`to implement: The status of task ${record.id} has been changed to ${value}`);

@@ -1,5 +1,3 @@
-// 文件路径: src/components/ResponsiveDate.tsx
-
 import React, { useRef, useState, useEffect } from 'react';
 import { format as dateFnsFormat } from "date-fns";
 

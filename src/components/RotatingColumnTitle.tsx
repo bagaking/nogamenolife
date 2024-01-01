@@ -1,7 +1,5 @@
-// 文件路径: src/components/RotatingColumnTitle.tsx
-
 import React, { useState, useEffect } from 'react';
-import './RotatingColumnTitle.css';
+import './RotatingColumnTitle.less';
 
 type RotatingColumnTitleProps = {
     chineseTitle: string;

@@ -1,5 +1,3 @@
-// 文件路径: src/components/PopoverSelectTag.tsx
-
 import React from 'react';
 import { Tag, Select, Popover } from 'antd';
 

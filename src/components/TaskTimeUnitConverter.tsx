@@ -1,4 +1,3 @@
-// 文件路径: src/components/TaskTimeUnitConverter.tsx
 import React, { useState, useEffect } from 'react';
 import { Input, Tooltip, Popover, Badge } from 'antd';
 
@@ -7,48 +6,6 @@ interface Props {
     value: number;
     onChange: (value: number) => void;
 }
-
-// export const TaskTimeUnitConverter: React.FC<Props> = ({ value, onChange }) => {
-//     const [minutes, setMinutes] = useState(value || 0);
-//     const [timeUnit, setTimeUnit] = useState('');
-//
-//     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         const mins = parseInt(e.target.value, 10);
-//         setMinutes(mins);
-//         onChange(mins);
-//     };
-//
-//     useEffect(() => {
-//         let cc = 0, pomo = 0, q = 0, mins = minutes;
-//
-//         if (mins >= 180) {
-//             cc = Math.floor(mins / 180);
-//             mins = mins % 180;
-//         }
-//         if (mins >= 30) {
-//             pomo = Math.floor(mins / 30);
-//             mins = mins % 30;
-//         }
-//         if (mins >= 10) {
-//             q = Math.floor(mins / 10);
-//             mins = mins % 10;
-//         }
-//
-//         setTimeUnit(`${cc ? cc + 'cc ' : ''}${pomo ? pomo + 'pomo ' : ''}${q ? q + 'q ' : ''}${mins ? mins + 'min' : ''}`);
-//
-//     }, [minutes]);
-//
-//     return (
-//         <div>
-//             <label>输入分钟数: </label>
-//             <Tooltip title="10~15 分钟为 1 q，30~40 分钟为 1pomo, 1.5到2小时为 1cc">
-//                 <Input type="number" onChange={handleInputChange} value={minutes} style={{width: 100}} />
-//             </Tooltip>
-//             <Tag color="volcano">{timeUnit}</Tag>
-//         </div>
-//     );
-// };
-
 
 export const TaskTimeUnitConverter: React.FC<Props> = ({ value, onChange }) => {
     const [cc, setCc] = useState(0);
