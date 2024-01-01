@@ -1,6 +1,5 @@
 import {TaskStatus, TaskSourceType} from "./ActiveTaskModel"
 
-
 export const TaskStatusColor = {
     [TaskStatus.NotStarted]: 'orange',
     [TaskStatus.Arranging]: 'blue',

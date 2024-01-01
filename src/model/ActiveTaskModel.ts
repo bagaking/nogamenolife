@@ -1,5 +1,3 @@
-
-
 export type ActiveTaskModel = {
     id: number;
     title: string;
