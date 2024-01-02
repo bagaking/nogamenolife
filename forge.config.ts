@@ -1,3 +1,4 @@
+// forge.config.ts
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
@@ -22,6 +23,10 @@ const config: ForgeConfig = {
         {
           entry: 'src/preload.ts',
           config: 'vite.preload.config.ts',
+        },
+        {
+          entry: 'pkg/framework/vvm_preload.ts',
+          config: 'pkg/framework/vite.vvm_preload.config.ts',
         },
       ],
       renderer: [

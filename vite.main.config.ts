@@ -10,6 +10,7 @@ export default defineConfig({
     mainFields: ['module', 'jsnext:main', 'jsnext'],
     alias: {
       '@': '/src/', // 添加别名
+      '%': '/pkg/',
     }
   },
   css: {

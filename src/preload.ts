@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld(
                 cmd
             }
             ipcRenderer.send("__NGNL_VIEW_UPSTREAM", ctx, ...data);
-            console.log("__NGNL_VIEW_UPSTREAM", ctx, ...data)
+            // console.log("__NGNL_VIEW_UPSTREAM", ctx, ...data)
         },
         on: (channel: string, func: (ctx: {viewId: number, cmd: string}, ... data: any) => void) => {
             ipcRenderer.on("__NGNL_VIEW_DOWNSTREAM", (event, ctx, data) => {

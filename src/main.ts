@@ -1,7 +1,9 @@
 // Electron 主进程
+import {EVENT_KEY_BRAND} from "%/framework/types";
+
 const { app, ipcMain, BrowserWindow } = require('electron')
 import path from 'path';
-import {initBrowserViews} from "@/framework/viewFrameManager";
+import {initBrowserViews} from "%/framework/viewFrameManager";
 import {OnFrameContentMutation} from "@/handler/frameViewHandler"
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -36,17 +38,32 @@ const createWindow = async () => {
       zoomFactor: 0.8,
       // todo: build this script
       injectJS: `
-// Define Events
+function findRecentlyMsgCardDOMText() {
+  let doms = document.querySelectorAll('div[class^="message-box-content-"]')
+  doms = [...doms].filter(dom => !dom.querySelector('div[class^="self-content-pre"]'));
+  let dom = null
+  if (!!doms && !!doms.length) {
+    dom = doms[doms.length - 1]
+  }
+  const text = (dom?.innerText || "").trim().replace(/\\n{2,}/g, '\\n');
+  if(!text) {
+    console.log("findRecentlyMsgCardDOMText: got empty text")
+    return
+  }
+  return text
+}
 let observer = new MutationObserver((mutations, observer) => {
     // @ts-ignore
-    window.api_bridge.send("OnMutation", {mutations, observer})
+    window.${EVENT_KEY_BRAND}.send("OnMutation", {mutations, observer, text:findRecentlyMsgCardDOMText()})
 });
 observer.observe(document, { childList: true, subtree: true });
+
+
 `,
-      upstreamHandler: (cmd, data )=> {
+      upstreamHandler: (cmd: string, data: any )=> {
         if(cmd == "OnMutation") {
-          const {mutations, observer} = data
-          OnFrameContentMutation(mutations, observer)
+          const {mutations, observer, text} = data
+          OnFrameContentMutation(text, mutations, observer)
         }
       }
     },
@@ -55,12 +72,23 @@ observer.observe(document, { childList: true, subtree: true });
       url: MAIN_WINDOW_VITE_DEV_SERVER_URL ?? undefined,
       file: MAIN_WINDOW_VITE_DEV_SERVER_URL ? undefined : path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
       zoomFactor: 0.8,
-      injectJS: "console.log('GOGOGO'); api_bridge.on('test111', (ctx, ...data) => console.log(ctx, ...data)) ",
+      injectJS: `
+console.log('${EVENT_KEY_BRAND} Loaded:', ${EVENT_KEY_BRAND}.id() , ${EVENT_KEY_BRAND}); 
+${EVENT_KEY_BRAND}.on('test111', (ctx, ...data) => console.log(ctx, ...data))
+
+`,
     }
   ])
 
-  v2.view.webContents.openDevTools({mode: 'bottom'})
-  v2.sendDownstreamEvent("test111", {"t": 1})
+  v2.view.webContents.openDevTools({mode: 'bottom'});
+
+  (async () => {
+    while (true) {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      v2.sendDownstreamEvent("test111", {"t": 1})
+    }
+  })().then(console.log);
+
 };
 
 

@@ -5,6 +5,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/src/', // 添加别名
+            '%': '/pkg/',
         }
     },
     css: {

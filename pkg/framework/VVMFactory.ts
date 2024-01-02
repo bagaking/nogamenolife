@@ -1,8 +1,8 @@
 import { BrowserWindow, BrowserView, ipcMain, IpcMainEvent, contextBridge } from 'electron';
 import path from "path";
-import {ViewOptions, ViewEventCtx} from "./types"
+import {EVENT_KEY_DOWNSTREAM, EVENT_KEY_SET_ID, EVENT_KEY_UPSTREAM, IView, ViewOptions, VVMEventCtx} from "./types"
 
-export class View {
+class View implements IView {
     private static _idCount = 1;
     public static get idCount() {
         return ++ this._idCount;
@@ -14,7 +14,7 @@ export class View {
     constructor(private _win: BrowserWindow, private _options: ViewOptions) {
         this._id = View.idCount;
         this._view = new BrowserView({
-            webPreferences: { preload: path.join(__dirname, '../build/preload.js')  }// 指定 preload 脚本
+            webPreferences: { preload: path.join(__dirname, '../build/vvm_preload.js')  }// 指定 preload 脚本
         });
         // set
         this._win.addBrowserView(this._view);
@@ -41,7 +41,7 @@ export class View {
         if (!!zoomFactor) {
             this._view.webContents.setZoomFactor(zoomFactor);
         }
-        this._view.webContents.send('set-view-id', this.id);
+        this._view.webContents.send(EVENT_KEY_SET_ID, this.id);
         // await this._view.webContents.executeJavaScript(`console.log("NGNL ID SET", __NGNL_VIEW_ID)`);
 
         // 注入 Custom JS 脚本
@@ -50,54 +50,59 @@ export class View {
         }
     }
 
-    public handleUpstreamEvent(ctx: ViewEventCtx, ...data: any){
+    public handleUpstreamEvent(ctx: VVMEventCtx, ...data: any){
         if(!this._options?.upstreamHandler) {
             return
         }
         return this._options.upstreamHandler(ctx.cmd, ...data)
     }
 
-    public sendDownstreamEvent(cmd: string, ...data: any): boolean {
-        return ipcMain.emit("__NGNL_VIEW_DOWNSTREAM", {
+    public sendDownstreamEvent(cmd: string, ...data: any) {
+        const ctx = {
             viewId: this.id,
             cmd: cmd
-        }, ...data)
+        }
+        console.log("sendDownstreamEvent", EVENT_KEY_DOWNSTREAM, ctx)
+        return this._view.webContents.send(EVENT_KEY_DOWNSTREAM, ctx, ...data)
     }
 }
 
-export class ViewFactory {
+export class VVMFactory {
     private _instances: Map<number, View> = new Map();
-    private static _instance: ViewFactory;
+    private static _instance: VVMFactory;
 
     public static get Inst() {
         if (!this._instance) {
-            this._instance = new ViewFactory();
+            this._instance = new VVMFactory();
         }
         return this._instance;
     }
 
     public constructor() {
-        ipcMain.on('__NGNL_VIEW_UPSTREAM', async (event: IpcMainEvent, ctx: ViewEventCtx, ...data: any) => {
+        ipcMain.on(EVENT_KEY_UPSTREAM, async (event: IpcMainEvent, ctx: VVMEventCtx, ...data: any) => {
             const {viewId, cmd} = ctx
-            const view = ViewFactory.Inst.view(viewId)
-            console.log("VIEW_UPSTREAM event received", ctx, ...data)
+            const view = this._instances.get(viewId)
             if(!view) {
                 return
             }
             view.handleUpstreamEvent(ctx, ...data)
-            console.log("VIEW_UPSTREAM event handled", ctx, ...data)
+            console.log(
+                "VIEW_UPSTREAM event handled",
+                ctx,
+                // ...data,
+            )
         });
     }
 
-    public async CreateBrowserView(win: BrowserWindow, options: ViewOptions): Promise<View> {
+    public async CreateBrowserView(win: BrowserWindow, options: ViewOptions): Promise<IView> {
         const view = new View(win, options);
         // reg
-        ViewFactory.Inst._instances.set(view.id, view);
+        VVMFactory.Inst._instances.set(view.id, view);
         await view.init();
         return view;
     }
 
-    public view(id: number): View{
+    public view(id: number): IView {
         return this._instances.get(id)
     }
 }
