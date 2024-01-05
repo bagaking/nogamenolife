@@ -6,7 +6,8 @@ with a small TypeScript test plus a full TypeScript typecheck.
 
 ## Local validation
 
-This repository uses Yarn, as indicated by `yarn.lock`.
+This repository uses the Yarn version pinned by `packageManager` in
+`package.json`.
 
 ```sh
 yarn test
