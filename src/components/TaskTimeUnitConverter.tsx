@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Tooltip, Popover, Badge } from 'antd';
+import { Input, Popover, Badge } from 'antd';
 
 // 定义 props 类型
 interface Props {
@@ -7,17 +7,25 @@ interface Props {
     onChange: (value: number) => void;
 }
 
+const normalizeMinutes = (value: number): number => (
+    Number.isFinite(value) && value >= 0 ? value : 0
+);
+
 export const TaskTimeUnitConverter: React.FC<Props> = ({ value, onChange }) => {
     const [cc, setCc] = useState(0);
     const [pomo, setPomo] = useState(0);
     const [q, setQ] = useState(0);
-    const [minutes, setMinutes] = useState(value || 0);
+    const [minutes, setMinutes] = useState(normalizeMinutes(value));
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const mins = parseInt(e.target.value, 10);
+        const mins = normalizeMinutes(parseInt(e.target.value, 10));
         setMinutes(mins);
         onChange(mins);
     };
+
+    useEffect(() => {
+        setMinutes(normalizeMinutes(value));
+    }, [value]);
 
     useEffect(() => {
         let cc = 0, pomo = 0, q = 0, mins = minutes;
@@ -36,7 +44,7 @@ export const TaskTimeUnitConverter: React.FC<Props> = ({ value, onChange }) => {
 
             <Popover content={
                 <div>
-                    <Input type="number" onChange={handleInputChange} value={minutes} style={{width: "100%"}} />
+                    <Input type="number" min={0} onChange={handleInputChange} value={minutes} style={{width: "100%"}} />
                 </div>
             } title="请输入分钟数" >
                 {/* 只在有值的时候才显示对应的 Badge */}
