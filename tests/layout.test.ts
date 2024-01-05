@@ -13,6 +13,14 @@ assert.equal(
     101,
 );
 
+const sevenColumnBounds = calculateBounds(101, 50, Array.from({ length: 7 }, () => ({ ratio: 1 / 7 })));
+
+assert.deepEqual(
+    sevenColumnBounds.map((bound) => bound.width),
+    [14, 14, 14, 14, 14, 14, 17],
+);
+assert.equal(sevenColumnBounds[6].x + sevenColumnBounds[6].width, 101);
+
 assert.deepEqual(
     calculateBounds(100, 40, [{ ratio: 0.25 }, { ratio: 0.25 }]),
     [

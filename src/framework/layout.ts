@@ -7,9 +7,11 @@ export type ViewBounds = {
     height: number;
 };
 
+const FULL_WIDTH_RATIO_TOLERANCE = 1e-9;
+
 const isFullWidthLayout = (layout: LayoutItem[]): boolean => {
     const totalRatio = layout.reduce((sum, item) => sum + item.ratio, 0);
-    return Math.abs(totalRatio - 1) < Number.EPSILON;
+    return Math.abs(totalRatio - 1) <= FULL_WIDTH_RATIO_TOLERANCE;
 };
 
 export function calculateBounds(width: number, height: number, layout: LayoutItem[]): ViewBounds[] {
