@@ -10,6 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
+    "test": "ts-node tests/layout.test.ts",
     "typecheck": "tsc --noEmit",
     "bundle:all": "file_bundle -v -s"
   },

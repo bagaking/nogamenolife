@@ -1,21 +1,9 @@
 // file: ./src/framework/viewFrameManager.ts
-import { BrowserWindow, BrowserView } from 'electron';
-import {ViewFactory, View} from "@/framework/ViewFactory";
+import { BrowserWindow } from 'electron';
 import {ViewOptions, LayoutItem} from "./types"
+import { calculateBounds } from './layout';
+import {ViewFactory, View} from "./ViewFactory";
 
-
-export function calculateBounds(width: number, height: number, layout: LayoutItem[]): { x: number; y: number; width: number; height: number; }[] {
-    const bounds: { x: number; y: number; width: number; height: number; }[] = [];
-    let x = 0;
-
-    for (const item of layout) {
-        const viewWidth = Math.floor(width * item.ratio);
-        bounds.push({ x: x, y: 0, width: viewWidth, height: height });
-        x += viewWidth;
-    }
-
-    return bounds;
-}
 
 export async function initBrowserViews(win: BrowserWindow, opts: ( LayoutItem | ViewOptions )[]): Promise<View[]> {
     const views: View[] = [];
