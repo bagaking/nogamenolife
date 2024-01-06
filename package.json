@@ -14,6 +14,9 @@
     "lint": "eslint --ext .ts,.tsx .",
     "test": "ts-node tests/layout.test.ts",
     "typecheck": "tsc --noEmit",
+    "verify": "yarn test && yarn typecheck && yarn build",
+    "check": "yarn verify",
+    "smoke:package": "yarn package",
     "bundle:all": "file_bundle -v -s"
   },
   "keywords": [],

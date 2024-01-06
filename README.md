@@ -40,6 +40,7 @@ corepack yarn install --frozen-lockfile
 
 ```sh
 corepack yarn start       # Start the Electron app in development mode.
+corepack yarn build       # Build main, preload, and renderer Vite bundles.
 corepack yarn package     # Package the app locally with Electron Forge.
 corepack yarn make        # Build distributable artifacts through Forge makers.
 corepack yarn lint        # Run ESLint over TypeScript and TSX files.
@@ -50,12 +51,17 @@ corepack yarn lint        # Run ESLint over TypeScript and TSX files.
 ```sh
 corepack yarn test        # Run tests/layout.test.ts with ts-node.
 corepack yarn typecheck   # Run tsc --noEmit.
+corepack yarn verify      # Run test, typecheck, and build.
+corepack yarn check       # Alias for verify.
+corepack yarn smoke:package # Run an Electron Forge package smoke.
 ```
 
 The `test` script currently validates layout bounds from
 `src/framework/layout.ts`, including rounding behavior and empty input handling.
 The `typecheck` script verifies the TypeScript project without emitting build
-artifacts.
+artifacts. The `verify` script is the default local and CI validation entry
+point. Use `smoke:package` when a change needs a local Electron Forge packaging
+check in addition to default validation.
 
 ## CI
 
@@ -65,8 +71,7 @@ GitHub Actions runs on push and pull request. The validation job:
 - sets up Node.js 20 with Yarn cache support,
 - enables Corepack,
 - installs dependencies with `corepack yarn install --frozen-lockfile`,
-- runs `corepack yarn test`,
-- runs `corepack yarn typecheck`.
+- runs `corepack yarn verify`.
 
 ## Verified Scope
 
@@ -74,7 +79,9 @@ The automated checks currently cover:
 
 - layout helper behavior in `tests/layout.test.ts`,
 - TypeScript compile-time consistency through `tsc --noEmit`,
-- CI execution of the same test and typecheck commands used locally.
+- production Vite build output for the Electron main, preload, and renderer
+  entry points,
+- CI execution of the same verify command used locally.
 
 ## Known Boundaries
 
