@@ -6,6 +6,8 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
+    "build": "node -e \"require('fs').rmSync('.vite', { recursive: true, force: true })\" && vite build --config vite.main.config.ts && vite build --config vite.preload.config.ts && vite build --config vite.renderer.config.ts",
+    "prepack": "corepack yarn build",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -29,6 +31,8 @@
     "url": "https://github.com/bagaking/nogamenolife/issues"
   },
   "files": [
+    ".vite/build",
+    ".vite/renderer",
     "forge.config.ts",
     "index.html",
     "src",
