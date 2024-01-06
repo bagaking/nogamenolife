@@ -28,6 +28,16 @@
   "bugs": {
     "url": "https://github.com/bagaking/nogamenolife/issues"
   },
+  "files": [
+    "forge.config.ts",
+    "index.html",
+    "src",
+    "tests",
+    "tsconfig.json",
+    "vite.main.config.ts",
+    "vite.preload.config.ts",
+    "vite.renderer.config.ts"
+  ],
   "packageManager": "yarn@1.22.22",
   "devDependencies": {
     "@electron-forge/cli": "^7.2.0",
