@@ -49,7 +49,7 @@ corepack yarn lint        # Run ESLint over TypeScript and TSX files.
 ## Validation Commands
 
 ```sh
-corepack yarn test        # Run tests/layout.test.ts with ts-node.
+corepack yarn test        # Run TypeScript tests with ts-node.
 corepack yarn typecheck   # Run tsc --noEmit.
 corepack yarn verify      # Run test, typecheck, and build.
 corepack yarn check       # Alias for verify.
@@ -57,11 +57,12 @@ corepack yarn smoke:package # Run an Electron Forge package smoke.
 ```
 
 The `test` script currently validates layout bounds from
-`src/framework/layout.ts`, including rounding behavior and empty input handling.
-The `typecheck` script verifies the TypeScript project without emitting build
-artifacts. The `verify` script is the default local and CI validation entry
-point. Use `smoke:package` when a change needs a local Electron Forge packaging
-check in addition to default validation.
+`src/framework/layout.ts` and active task column metadata from
+`src/panels/activeTask/activeTaskColumns.ts`. The `typecheck` script verifies
+the TypeScript project without emitting build artifacts. The `verify` script is
+the default local and CI validation entry point. Use `smoke:package` when a
+change needs a local Electron Forge packaging check in addition to default
+validation.
 
 ## CI
 
@@ -78,6 +79,8 @@ GitHub Actions runs on push and pull request. The validation job:
 The automated checks currently cover:
 
 - layout helper behavior in `tests/layout.test.ts`,
+- active task column key and label metadata in
+  `tests/activeTaskColumns.test.ts`,
 - TypeScript compile-time consistency through `tsc --noEmit`,
 - production Vite build output for the Electron main, preload, and renderer
   entry points,
