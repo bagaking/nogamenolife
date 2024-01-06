@@ -82,3 +82,7 @@ The current automated validation does not prove end-to-end Electron startup,
 packaged installer behavior, renderer interaction flows, persistence behavior,
 or cross-platform release quality. Treat packaging and maker scripts as available
 development commands, not as evidence of a completed release process.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
