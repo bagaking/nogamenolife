@@ -1,10 +1,10 @@
 // Electron 主进程
-import {EVENT_KEY_BRAND} from "%/framework/types";
 
-const { app, ipcMain, BrowserWindow } = require('electron')
+import {HandleBotsChat} from "@/handler";
+
+const { app, BrowserWindow } = require('electron')
 import path from 'path';
-import {initBrowserViews} from "%/framework/viewFrameManager";
-import {OnFrameContentMutation} from "@/handler/frameViewHandler"
+import {initBrowserViews} from "%/framework/layout";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -16,7 +16,7 @@ const createWindow = async () => {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
-    // frame: false,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true, // 确保打开 nodeIntegration, 集成 Node.js 以在渲染进程使用
@@ -31,64 +31,34 @@ const createWindow = async () => {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
 
-  const [v1, v2] = await initBrowserViews(mainWindow, [
+  const usingURL = MAIN_WINDOW_VITE_DEV_SERVER_URL ? MAIN_WINDOW_VITE_DEV_SERVER_URL + "/editor" : undefined
+  console.log("usingURL ==", MAIN_WINDOW_VITE_DEV_SERVER_URL, MAIN_WINDOW_VITE_NAME, usingURL)
+
+  const [vmBot1, vmEditor, vmBot2] = await initBrowserViews(mainWindow, [
     {
-      ratio: 0.382,
       url: 'https://www.ciciai.com',
+      runtimeScriptFile: "cici_runtime.js",
+      ratio: 0.3,
       zoomFactor: 0.8,
-      // todo: build this script
-      injectJS: `
-function findRecentlyMsgCardDOMText() {
-  let doms = document.querySelectorAll('div[class^="message-box-content-"]')
-  doms = [...doms].filter(dom => !dom.querySelector('div[class^="self-content-pre"]'));
-  let dom = null
-  if (!!doms && !!doms.length) {
-    dom = doms[doms.length - 1]
-  }
-  const text = (dom?.innerText || "").trim().replace(/\\n{2,}/g, '\\n');
-  if(!text) {
-    console.log("findRecentlyMsgCardDOMText: got empty text")
-    return
-  }
-  return text
-}
-let observer = new MutationObserver((mutations, observer) => {
-    // @ts-ignore
-    window.${EVENT_KEY_BRAND}.send("OnMutation", {mutations, observer, text:findRecentlyMsgCardDOMText()})
-});
-observer.observe(document, { childList: true, subtree: true });
-
-
-`,
-      upstreamHandler: (cmd: string, data: any )=> {
-        if(cmd == "OnMutation") {
-          const {mutations, observer, text} = data
-          OnFrameContentMutation(text, mutations, observer)
-        }
-      }
     },
     {
-      ratio: 0.618,
-      url: MAIN_WINDOW_VITE_DEV_SERVER_URL ?? undefined,
+      url: usingURL,
       file: MAIN_WINDOW_VITE_DEV_SERVER_URL ? undefined : path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+      runtimeScriptFile: "test_runtime.js",
+      ratio: 0.4,
+      zoomFactor: 1,
+    },
+    {
+      url: 'https://www.ciciai.com',
+      runtimeScriptFile: "cici_runtime.js",
+      ratio: 0.3,
       zoomFactor: 0.8,
-      injectJS: `
-console.log('${EVENT_KEY_BRAND} Loaded:', ${EVENT_KEY_BRAND}.id() , ${EVENT_KEY_BRAND}); 
-${EVENT_KEY_BRAND}.on('test111', (ctx, ...data) => console.log(ctx, ...data))
-
-`,
-    }
+    },
   ])
 
-  v2.view.webContents.openDevTools({mode: 'bottom'});
+  vmEditor.view.webContents.openDevTools({mode: 'undocked'});
 
-  (async () => {
-    while (true) {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      v2.sendDownstreamEvent("test111", {"t": 1})
-    }
-  })().then(console.log);
-
+  HandleBotsChat(vmEditor, vmBot1, vmBot2)
 };
 
 
@@ -113,11 +83,3 @@ app.on('activate', async () => {
     await createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-// test
-// ipcMain.on('gogogo', (event: IpcMainEvent) => {
-//   console.log("gogogogogo", event)
-// });

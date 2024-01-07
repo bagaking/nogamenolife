@@ -6,6 +6,8 @@ import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 
+import {genViteConfigs} from './pkg/framework/builder/vite';
+
 const config: ForgeConfig = {
   packagerConfig: {},
   rebuildConfig: {},
@@ -25,9 +27,10 @@ const config: ForgeConfig = {
           config: 'vite.preload.config.ts',
         },
         {
-          entry: 'pkg/framework/vvm_preload.ts',
-          config: 'pkg/framework/vite.vvm_preload.config.ts',
+          entry: 'pkg/framework/vm/v_system_preload.ts',
+          config: 'vite.preload.config.ts',
         },
+        ...genViteConfigs('src/vvms/', 'vite.preload.config.ts')
       ],
       renderer: [
         {

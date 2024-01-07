@@ -1,8 +1,8 @@
 // file: ./src/framework/viewFrameManager.ts
 import { BrowserWindow } from 'electron';
-import {VVMFactory} from "./VVMFactory";
-import {ViewOptions, LayoutItem, IView, } from "./types"
-
+import {VFactory} from "./factory";
+import {ViewOptions, LayoutItem, IViewContainer, } from "./types"
+import {VContainerStandard} from "%/framework/vContainer";
 
 export function calculateBounds(width: number, height: number, layout: LayoutItem[]): { x: number; y: number; width: number; height: number; }[] {
     const bounds: { x: number; y: number; width: number; height: number; }[] = [];
@@ -17,8 +17,8 @@ export function calculateBounds(width: number, height: number, layout: LayoutIte
     return bounds;
 }
 
-export async function initBrowserViews(win: BrowserWindow, opts: ( LayoutItem | ViewOptions )[]): Promise<IView[]> {
-    const views: IView[] = [];
+export async function initBrowserViews(win: BrowserWindow, opts: ( LayoutItem | ViewOptions )[]): Promise<IViewContainer[]> {
+    const views: IViewContainer[] = [];
     const layouts = opts.map(x => x as LayoutItem)
 
     const bounds = calculateBounds(win.getBounds().width, win.getBounds().height, layouts);
@@ -27,7 +27,7 @@ export async function initBrowserViews(win: BrowserWindow, opts: ( LayoutItem | 
             ... layouts[i],
             bound: bounds[i]
         }
-        const view = await VVMFactory.Inst.CreateBrowserView(win, option)
+        const view = await VFactory.Inst.CreateBrowserView(VContainerStandard, win, option)
         views.push(view);
     }
 
