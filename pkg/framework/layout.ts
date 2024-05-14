@@ -25,7 +25,8 @@ export async function initBrowserViews(win: BrowserWindow, opts: ( LayoutItem | 
     for (let i = 0; i < layouts.length; i++) {
         const option = {
             ... layouts[i],
-            bound: bounds[i]
+            bound: bounds[i],
+            webSecurity: false
         }
         const view = await VFactory.Inst.CreateBrowserView(VContainerStandard, win, option)
         views.push(view);

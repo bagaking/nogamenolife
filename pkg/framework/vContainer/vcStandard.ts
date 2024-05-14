@@ -20,7 +20,10 @@ export class VContainerStandard extends VContBase implements IViewContainer {
     constructor(_win: BrowserWindow, _options: ViewOptions) {
         super(_win, _options)
         this._view = new BrowserView({
-            webPreferences: { preload: srcPathVSystemPreload() }// 指定 preload 脚本
+            webPreferences: {
+                preload: srcPathVSystemPreload(),
+                // webSecurity: false,
+            }, // 指定 preload 脚本
         });
         // set
         this._win.addBrowserView(this._view);

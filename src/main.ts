@@ -1,6 +1,6 @@
 // Electron 主进程
 
-import {HandleBotsChat} from "@/handler";
+import {HandleBotsChat, HandleScroll} from "@/handler";
 
 const { app, BrowserWindow } = require('electron')
 import path from 'path';
@@ -34,13 +34,34 @@ const createWindow = async () => {
   const usingURL = MAIN_WINDOW_VITE_DEV_SERVER_URL ? MAIN_WINDOW_VITE_DEV_SERVER_URL + "/editor" : undefined
   console.log("usingURL ==", MAIN_WINDOW_VITE_DEV_SERVER_URL, MAIN_WINDOW_VITE_NAME, usingURL)
 
-  const [vmBot1, vmEditor, vmBot2] = await initBrowserViews(mainWindow, [
-    {
-      url: 'https://www.ciciai.com',
-      runtimeScriptFile: "cici_runtime.js",
-      ratio: 0.3,
-      zoomFactor: 0.8,
-    },
+  // const [vmBot1, vmEditor, vmBot2] = await initBrowserViews(mainWindow, [
+  //   {
+  //     url: 'https://www.ciciai.com',
+  //     runtimeScriptFile: "cici_runtime.js",
+  //     ratio: 0.3,
+  //     zoomFactor: 0.8,
+  //   },
+  //   {
+  //     url: usingURL,
+  //     file: MAIN_WINDOW_VITE_DEV_SERVER_URL ? undefined : path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+  //     runtimeScriptFile: "test_runtime.js",
+  //     ratio: 0.4,
+  //     zoomFactor: 1,
+  //   },
+  //   {
+  //     url: 'https://www.ciciai.com',
+  //     runtimeScriptFile: "cici_runtime.js",
+  //     ratio: 0.3,
+  //     zoomFactor: 0.8,
+  //   },
+  // ])
+  //
+  // vmEditor.view.webContents.openDevTools({mode: 'undocked'});
+  // HandleBotsChat(vmEditor, vmBot1, vmBot2)
+
+
+  let canvasWebsiteURL =""
+  const [vmEditor, vmScroll] = await initBrowserViews(mainWindow, [
     {
       url: usingURL,
       file: MAIN_WINDOW_VITE_DEV_SERVER_URL ? undefined : path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
@@ -49,16 +70,15 @@ const createWindow = async () => {
       zoomFactor: 1,
     },
     {
-      url: 'https://www.ciciai.com',
-      runtimeScriptFile: "cici_runtime.js",
-      ratio: 0.3,
+      url: canvasWebsiteURL,
+      // runtimeScriptFile: "cici_runtime.js",
+      ratio: 0.6,
       zoomFactor: 0.8,
     },
   ])
 
-  vmEditor.view.webContents.openDevTools({mode: 'undocked'});
-
-  HandleBotsChat(vmEditor, vmBot1, vmBot2)
+  vmScroll.view.webContents.openDevTools({mode: 'undocked'});
+  HandleScroll(vmEditor, vmScroll)
 };
 
 

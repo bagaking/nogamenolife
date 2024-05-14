@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
 import {EVENT_KEY_UPSTREAM, IViewContainer, ViewOptions, VCtx} from "./types"
 
 export class VFactory {
+    //
     private _instances: Map<number, IViewContainer> = new Map();
     private static _instance: VFactory;
 

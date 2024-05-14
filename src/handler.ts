@@ -45,3 +45,48 @@ export function HandleBotsChat(vmEditor: IViewContainer, ...vmBots: IViewContain
     // ctrCC01.sendChat("try this")
 }
 
+
+export function HandleScroll(vmEditor: IViewContainer, vmScroll: IViewContainer) {
+
+    let cp: CPController
+
+    let history: string = ""
+
+    cp = new CPController(vmEditor, {
+        OnCodeExecute: (str:string) => {
+            let cmd = str
+            let v = Number(cmd)
+            if (!v && cmd !== "bottom" && cmd != "top") {
+                return
+            }
+
+            console.log("OnCodeExecute", cmd, typeof v)
+
+            history += "\n" + cmd
+            cp.updateHistory(history)
+
+            vmScroll.view.webContents.focus()
+            if(cmd == "bottom") {
+                vmScroll.view.webContents.scrollToBottom()
+                return
+            }
+
+            if (cmd == "top"){
+                vmScroll.view.webContents.scrollToTop()
+                return
+            }
+
+            vmScroll.view.webContents.sendInputEvent({
+                type: 'mouseWheel',
+                x: 300,  // 模拟滚动事件发生的横坐标
+                y: 300,  // 模拟滚动事件发生的纵坐标
+                deltaX: 0,      // 横向滚动的距离，这里设置为0
+                deltaY: v,    // 纵向滚动的距离，正数向下滚动，负数向上滚动
+                canScroll: true // 设置为true以允许内容滚动
+            });
+
+        }
+    })
+    // ctrCC01.sendChat("try this")
+}
+
